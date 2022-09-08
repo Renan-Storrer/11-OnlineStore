@@ -40,7 +40,7 @@ class Home extends React.Component {
           </p>
 
           <label htmlFor="search">
-            Busca:
+            Busca :
             <input
               type="text"
               data-testid="query-input"
