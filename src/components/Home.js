@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { getProductsFromCategoryAndQuery } from '../services/api';
-
-import Category from './Category';
+import { getProductsFromCategoryAndQuery, getCategories } from '../services/api';
 
 class Home extends React.Component {
   state = {
     search: '',
     products: [],
+    categories: [],
   };
+
+  componentDidMount() {
+    this.fetchApi();
+  }
 
   HandleClick = async () => {
     const { search } = this.state;
@@ -26,12 +29,38 @@ class Home extends React.Component {
     });
   };
 
+  fetchApi = async () => {
+    const categories = await getCategories();
+    this.setState({ categories });
+  };
+
+  categorySelect = async (event) => {
+    const { target: { id } } = event;
+    const getPro = await getProductsFromCategoryAndQuery(id);
+    this.setState({
+      products: getPro.results,
+    });
+  };
+
   render() {
-    const { products } = this.state;
+    const { products, categories } = this.state;
     return (
       <>
-        <div id="categorias">
-          <Category />
+        <div>
+          {categories.map((elemento) => (
+            <section key={ elemento.id }>
+              <label htmlFor={ elemento.id }>
+                <input
+                  name="categories"
+                  type="radio"
+                  id={ elemento.id }
+                  data-testid="category"
+                  onChange={ this.categorySelect }
+                />
+                {elemento.name}
+              </label>
+            </section>
+          ))}
         </div>
 
         <div id="barraDePesquisa">
