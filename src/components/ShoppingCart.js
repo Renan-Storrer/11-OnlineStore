@@ -18,30 +18,32 @@ class ShoppingCart extends React.Component {
     const { productsOnlocalStorage } = this.state;
     return (
       <section>
-        <div>
-          <p data-testid="shopping-cart-product-quantity">
-            {`Quantidade de items: ${productsOnlocalStorage.length}`}
-          </p>
-          { productsOnlocalStorage.map((product) => (
-            <section className="cart-items" key={ product.id }>
-              <img
-                src={ product.thumbnail }
-                alt={ product.title }
-                data-testid="shopping-cart-product-image"
-              />
-              <p data-testid="shopping-cart-product-name">
-                Nome:
-                {product.title}
-              </p>
-              <p>{product.warranty}</p>
-              <p data-testid="shopping-cart-product-price">
-                Preço:
-                {product.price}
-              </p>
-            </section>
-          ))}
-        </div>
-        <p data-testid="shopping-cart-empty-message">Seu carrinho está vazio</p>
+        {productsOnlocalStorage ? (
+          <div>
+            <p data-testid="shopping-cart-product-quantity">
+              {`Quantidade de items: ${productsOnlocalStorage.length}`}
+            </p>
+            { productsOnlocalStorage.map((product) => (
+              <section className="cart-items" key={ product.id }>
+                <img
+                  src={ product.thumbnail }
+                  alt={ product.title }
+                  data-testid="shopping-cart-product-image"
+                />
+                <p data-testid="shopping-cart-product-name">
+                  Nome:
+                  {product.title}
+                </p>
+                <p>{product.warranty}</p>
+                <p data-testid="shopping-cart-product-price">
+                  Preço:
+                  {product.price}
+                </p>
+              </section>
+            ))}
+          </div>
+        )
+          : <p data-testid="shopping-cart-empty-message">Seu carrinho está vazio</p>}
       </section>
 
     );
