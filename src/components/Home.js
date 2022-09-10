@@ -7,10 +7,12 @@ class Home extends React.Component {
     search: '',
     products: [],
     categories: [],
+    productsOnlocalStorage: [],
   };
 
   componentDidMount() {
     this.fetchApi();
+    // this.getFromLocalStorage();
   }
 
   HandleClick = async () => {
@@ -34,6 +36,11 @@ class Home extends React.Component {
     this.setState({ categories });
   };
 
+  /* getFromLocalStorage() {
+    const response = JSON.parse(localStorage.getItem("product"))
+    this.setState({ productsOnlocalStorage: response });
+  } */
+
   categorySelect = async (event) => {
     const { target: { id } } = event;
     const getPro = await getProductsFromCategoryAndQuery(id);
@@ -41,6 +48,18 @@ class Home extends React.Component {
       products: getPro.results,
     });
   };
+
+  addToCart(product) {
+    const { productsOnlocalStorage } = this.state;
+    this.setState({
+      productsOnlocalStorage: [...productsOnlocalStorage, product],
+    }, this.addtoLocalStorage);
+  }
+
+  addtoLocalStorage() {
+    const { productsOnlocalStorage } = this.state;
+    localStorage.setItem('product', JSON.stringify(productsOnlocalStorage));
+  }
 
   render() {
     const { products, categories } = this.state;
@@ -96,19 +115,27 @@ class Home extends React.Component {
           (products.length > 0)
             ? (
               products.map((product) => (
-                <Link
-                  to={ `/productdetail/${product.id}` }
-                  className="poducts-card"
-                  key={ product.id }
-                  data-testid="product-detail-link"
-                >
-                  <div data-testid="product">
-                    <img src={ product.thumbnail } alt={ product.title } />
-                    <p>{ product.title }</p>
-                    <p>{`R$ ${product.price}`}</p>
-                    <br />
-                  </div>
-                </Link>
+                <section className="product-card" key={ product.id }>
+                  <Link
+                    to={ `/productdetail/${product.id}` }
+                    className="poducts-card"
+                    data-testid="product-detail-link"
+                  >
+                    <div data-testid="product">
+                      <img src={ product.thumbnail } alt={ product.title } />
+                      <p>{ product.title }</p>
+                      <p>{`R$ ${product.price}`}</p>
+                      <br />
+                    </div>
+                  </Link>
+                  <button
+                    type="button"
+                    data-testid="product-add-to-cart"
+                    onClick={ () => this.addToCart(product) }
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </section>
               ))
             )
             : <p>Nenhum produto foi encontrado</p>

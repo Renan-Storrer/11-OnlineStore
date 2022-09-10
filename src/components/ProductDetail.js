@@ -22,7 +22,6 @@ class ProductDetail extends React.Component {
     const { product } = this.state;
     return (
       <section className="productDetail">
-        {console.log(product)}
         <img
           src={ product.thumbnail }
           alt={ product.title }
