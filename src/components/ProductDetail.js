@@ -6,6 +6,8 @@ import { getProductById } from '../services/api';
 class ProductDetail extends React.Component {
   state = {
     product: [],
+    productsOnlocalStorage: [],
+
   };
 
   componentDidMount() {
@@ -16,6 +18,18 @@ class ProductDetail extends React.Component {
   async callGetProductById(id) {
     const product = await getProductById(id);
     this.setState({ product });
+  }
+
+  addToCart(product) {
+    const { productsOnlocalStorage } = this.state;
+    this.setState({
+      productsOnlocalStorage: [...productsOnlocalStorage, product],
+    }, this.addtoLocalStorage);
+  }
+
+  addtoLocalStorage() {
+    const { productsOnlocalStorage } = this.state;
+    localStorage.setItem('product', JSON.stringify(productsOnlocalStorage));
   }
 
   render() {
@@ -36,9 +50,17 @@ class ProductDetail extends React.Component {
           Preço:
           {product.price}
         </p>
+        <button
+          type="button"
+          data-testid="product-detail-add-to-cart"
+          onClick={ () => this.addToCart(product) }
+        >
+          Adicionar ao Carrinho
+        </button>
         <Link
           to="/shoppingCart"
         >
+
           <button
             data-testid="shopping-cart-button"
             type="button"
