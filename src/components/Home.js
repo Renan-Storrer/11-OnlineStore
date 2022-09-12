@@ -38,7 +38,7 @@ class Home extends React.Component {
 
   /* getFromLocalStorage() {
     const response = JSON.parse(localStorage.getItem("product"))
-    this.setState({ productsOnlocalStorage: response })
+    this.setState({ productsOnlocalStorage: response})
   } */
 
   categorySelect = async (event) => {

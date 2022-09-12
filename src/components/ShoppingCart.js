@@ -23,7 +23,7 @@ class ShoppingCart extends React.Component {
             <p data-testid="shopping-cart-product-quantity">
               {`Quantidade de items: ${productsOnlocalStorage.length}`}
             </p>
-            { productsOnlocalStorage.map((product) => (
+            {productsOnlocalStorage.map((product) => (
               <section className="cart-items" key={ product.id }>
                 <img
                   src={ product.thumbnail }
@@ -39,8 +39,39 @@ class ShoppingCart extends React.Component {
                   Preço:
                   {product.price}
                 </p>
+
+                {/* Div dedicada para diminuir ou aumentar a quantidade do produto */}
+                <div className="quantidade">
+                  <button
+                    type="submit"
+                    data-testid="product-decrease-quantity"
+                  >
+                    ➖
+                  </button>
+                  <p>1</p>
+                  <button
+                    type="submit"
+                    data-testid="product-increase-quantity"
+                  >
+                    ➕
+                  </button>
+                </div>
+
+                {/* Botão de remover item da lista */}
+                <button
+                  type="submit"
+                  data-testid="remove-product"
+                >
+                  ✖️ Remover
+                </button>
+
+                <br />
+                <br />
+                <br />
+
               </section>
             ))}
+            <p>Preço total da sua compra :</p>
           </div>
         )
           : <p data-testid="shopping-cart-empty-message">Seu carrinho está vazio</p>}
