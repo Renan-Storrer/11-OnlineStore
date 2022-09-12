@@ -64,7 +64,7 @@ class ShoppingCart extends React.Component {
                 >
                   ✖️ Remover
                 </button>
-                
+
                 <br />
                 <br />
                 <br />
