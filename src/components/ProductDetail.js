@@ -37,40 +37,90 @@ class ProductDetail extends React.Component {
   render() {
     const { product } = this.state;
     return (
-      <section className="productDetail">
-        <img
-          src={ product.thumbnail }
-          alt={ product.title }
-          data-testid="product-detail-image"
-        />
-        <p data-testid="product-detail-name">
-          Nome:
-          {product.title}
-        </p>
-        <p>{product.warranty}</p>
-        <p data-testid="product-detail-price">
-          Preço:
-          {product.price}
-        </p>
-        <button
-          type="button"
-          data-testid="product-detail-add-to-cart"
-          onClick={ () => this.addToCart(product) }
-        >
-          Adicionar ao Carrinho
-        </button>
-        <Link
-          to="/shoppingCart"
-        >
-
+      <div>
+        <section className="productDetail">
+          <img
+            src={ product.thumbnail }
+            alt={ product.title }
+            data-testid="product-detail-image"
+          />
+          <p data-testid="product-detail-name">
+            Nome:
+            {product.title}
+          </p>
+          <p>{product.warranty}</p>
+          <p data-testid="product-detail-price">
+            Preço:
+            {product.price}
+          </p>
           <button
-            data-testid="shopping-cart-button"
             type="button"
+            data-testid="product-detail-add-to-cart"
+            onClick={ () => this.addToCart(product) }
           >
-            Ir para o carrinho
+            Adicionar ao Carrinho
           </button>
-        </Link>
-      </section>
+          <Link
+            to="/shoppingCart"
+          >
+
+            <button
+              data-testid="shopping-cart-button"
+              type="button"
+            >
+              Ir para o carrinho
+            </button>
+          </Link>
+        </section>
+        <form>
+          <h1>Avaliação</h1>
+          <label htmlFor="email">Email:</label>
+          <input type="email" id="email" />
+          <div>
+            <input
+              type="radio"
+              id="rate1"
+              name="rate"
+              value="1"
+            />
+            <label htmlFor="rate1">1</label>
+
+            <input
+              type="radio"
+              id="rate2"
+              name="rate"
+              value="2"
+            />
+            <label htmlFor="rate2">2</label>
+
+            <input
+              type="radio"
+              id="rate3"
+              name="rate"
+              value="3"
+            />
+            <label htmlFor="rate3">3</label>
+
+            <input
+              type="radio"
+              id="rate4"
+              name="rate"
+              value="4"
+            />
+            <label htmlFor="rate4">4</label>
+
+            <input
+              type="radio"
+              id="rate5"
+              name="rate"
+              value="5"
+            />
+            <label htmlFor="rate5">5</label>
+
+          </div>
+          <button type="submit">ENVIAR</button>
+        </form>
+      </div>
     );
   }
 }
