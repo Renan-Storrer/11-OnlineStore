@@ -12,8 +12,12 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.fetchApi();
-    // this.getFromLocalStorage();
   }
+
+  /*  getFromLocalStorage() {
+    const response = JSON.parse(localStorage.getItem('product'));
+    this.setState({ productsOnlocalStorage: response });
+  } */
 
   HandleClick = async () => {
     const { search } = this.state;
@@ -34,12 +38,8 @@ class Home extends React.Component {
   fetchApi = async () => {
     const categories = await getCategories();
     this.setState({ categories });
+    // this.getFromLocalStorage();
   };
-
-  /* getFromLocalStorage() {
-    const response = JSON.parse(localStorage.getItem("product"))
-    this.setState({ productsOnlocalStorage: response})
-  } */
 
   categorySelect = async (event) => {
     const { target: { id } } = event;
@@ -51,8 +51,10 @@ class Home extends React.Component {
 
   addToCart(product) {
     const { productsOnlocalStorage } = this.state;
+    const newProduct = product;
+    newProduct.qty = 1;
     this.setState({
-      productsOnlocalStorage: [...productsOnlocalStorage, product],
+      productsOnlocalStorage: [...productsOnlocalStorage, newProduct],
     }, this.addtoLocalStorage);
   }
 
