@@ -22,8 +22,10 @@ class ProductDetail extends React.Component {
 
   addToCart(product) {
     const { productsOnlocalStorage } = this.state;
+    const newProduct = product;
+    newProduct.qty = 1;
     this.setState({
-      productsOnlocalStorage: [...productsOnlocalStorage, product],
+      productsOnlocalStorage: [...productsOnlocalStorage, newProduct],
     }, this.addtoLocalStorage);
   }
 

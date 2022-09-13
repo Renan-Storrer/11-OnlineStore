@@ -14,13 +14,51 @@ class ShoppingCart extends React.Component {
     this.setState({ productsOnlocalStorage: response });
   }
 
+  btnSum(id) {
+    const { productsOnlocalStorage } = this.state;
+    let qtyUpdated = [];
+    productsOnlocalStorage.map((product) => {
+      if (id === product.id) {
+        product.qty += 1;
+      }
+      qtyUpdated = [...qtyUpdated, product];
+      return qtyUpdated;
+    });
+    this.setState({ productsOnlocalStorage: qtyUpdated }, this.addtoLocalStorage);
+  }
+
+  btnSub(id) {
+    const { productsOnlocalStorage } = this.state;
+    let qtyUpdated = [];
+    productsOnlocalStorage.map((product) => {
+      if (id === product.id && product.qty > 1) {
+        product.qty -= 1;
+      }
+      qtyUpdated = [...qtyUpdated, product];
+      return qtyUpdated;
+    });
+    this.setState({ productsOnlocalStorage: qtyUpdated }, this.addtoLocalStorage);
+  }
+
+  removeProduct(id) {
+    const { productsOnlocalStorage } = this.state;
+    let qtyUpdated = [];
+    qtyUpdated = productsOnlocalStorage.filter((product) => id !== product.id);
+    this.setState({ productsOnlocalStorage: qtyUpdated }, this.addtoLocalStorage);
+  }
+
+  addtoLocalStorage() {
+    const { productsOnlocalStorage } = this.state;
+    localStorage.setItem('product', JSON.stringify(productsOnlocalStorage));
+  }
+
   render() {
     const { productsOnlocalStorage } = this.state;
     return (
       <section>
         {productsOnlocalStorage ? (
           <div>
-            <p data-testid="shopping-cart-product-quantity">
+            <p>
               {`Quantidade de items: ${productsOnlocalStorage.length}`}
             </p>
             {productsOnlocalStorage.map((product) => (
@@ -43,15 +81,17 @@ class ShoppingCart extends React.Component {
                 {/* Div dedicada para diminuir ou aumentar a quantidade do produto */}
                 <div className="quantidade">
                   <button
-                    type="submit"
+                    type="button"
                     data-testid="product-decrease-quantity"
+                    onClick={ () => this.btnSub(product.id) }
                   >
                     ➖
                   </button>
-                  <p>1</p>
+                  <p data-testid="shopping-cart-product-quantity">{product.qty}</p>
                   <button
-                    type="submit"
+                    type="button"
                     data-testid="product-increase-quantity"
+                    onClick={ () => this.btnSum(product.id) }
                   >
                     ➕
                   </button>
@@ -59,8 +99,9 @@ class ShoppingCart extends React.Component {
 
                 {/* Botão de remover item da lista */}
                 <button
-                  type="submit"
+                  type="button"
                   data-testid="remove-product"
+                  onClick={ () => this.removeProduct(product.id) }
                 >
                   ✖️ Remover
                 </button>
