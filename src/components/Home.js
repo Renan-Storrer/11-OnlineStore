@@ -12,12 +12,13 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.fetchApi();
+    this.getFromLocalStorage();
   }
 
-  /*  getFromLocalStorage() {
-    const response = JSON.parse(localStorage.getItem('product'));
+  getFromLocalStorage() {
+    const response = JSON.parse(localStorage.getItem('product')) || [];
     this.setState({ productsOnlocalStorage: response });
-  } */
+  }
 
   HandleClick = async () => {
     const { search } = this.state;
@@ -38,7 +39,6 @@ class Home extends React.Component {
   fetchApi = async () => {
     const categories = await getCategories();
     this.setState({ categories });
-    // this.getFromLocalStorage();
   };
 
   categorySelect = async (event) => {
