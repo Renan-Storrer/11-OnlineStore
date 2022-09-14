@@ -6,6 +6,7 @@ import { getProductById } from '../services/api';
 class ProductDetail extends React.Component {
   state = {
     product: [],
+    productsOnlocalStorage: [],
     checked1: false,
     checked2: false,
     checked3: false,
@@ -13,7 +14,7 @@ class ProductDetail extends React.Component {
     checked5: false,
     email: '',
     comment: '',
-    validatingEntries: false,
+    validatingEntries: true,
     commentsArray: [],
   };
 
@@ -30,10 +31,13 @@ class ProductDetail extends React.Component {
   }
 
   getFromLocalStorage() {
-    // const {commentsArray} = this.state;
     const { match: { params: { id } } } = this.props;
-    const response = JSON.parse(localStorage.getItem(id)) || [];
-    this.setState({ commentsArray: response });
+    const response1 = JSON.parse(localStorage.getItem(id)) || [];
+    const response2 = JSON.parse(localStorage.getItem('product')) || [];
+    this.setState({
+      commentsArray: response1,
+      productsOnlocalStorage: response2,
+    });
   }
 
   async callGetProductById(id) {
@@ -41,7 +45,7 @@ class ProductDetail extends React.Component {
     this.setState({ product });
   }
 
-  btnEnviar(event) {
+  async btnEnviar(event) {
     event.preventDefault();
     const { checked1, checked2, checked3, checked4, checked5, email } = this.state;
     const { match: { params: { id } } } = this.props;
@@ -63,9 +67,12 @@ class ProductDetail extends React.Component {
 
     validatingEntries = checkEmail && checkRate;
 
-    this.setState({
-      validatingEntries,
-    }, () => this.addComment(id));
+    if (validatingEntries) {
+      this.setState({
+        validatingEntries,
+      }, () => this.addComment(id));
+    }
+    this.setState({ validatingEntries });
   }
 
   radioChecked({ target }) {
@@ -110,10 +117,36 @@ class ProductDetail extends React.Component {
     this.setState({ commentsArray: [...commentsArray, obj] }, this.addtoLocalStorage);
   }
 
+  resetForm() {
+    this.setState({
+      checked1: false,
+      checked2: false,
+      checked3: false,
+      checked4: false,
+      checked5: false,
+      email: '',
+      comment: '',
+    });
+  }
+
+  addToCart(product) {
+    const { productsOnlocalStorage } = this.state;
+    const newProduct = product;
+    newProduct.qty = 1;
+    this.setState({
+      productsOnlocalStorage: [...productsOnlocalStorage, newProduct],
+    }, this.addtoLocalStorage);
+  }
+
   addtoLocalStorage() {
     const { match: { params: { id } } } = this.props;
-    const { commentsArray } = this.state;
-    localStorage.setItem(id, JSON.stringify(commentsArray));
+    const { commentsArray, productsOnlocalStorage, validatingEntries } = this.state;
+    if (validatingEntries) {
+      localStorage.setItem(id, JSON.stringify(commentsArray));
+    } else {
+      localStorage.setItem('product', JSON.stringify(productsOnlocalStorage));
+    }
+    this.resetForm();
   }
 
   render() {
@@ -126,7 +159,7 @@ class ProductDetail extends React.Component {
       checked5,
       validatingEntries,
     } = this.state;
-    const { commentsArray } = this.state;
+    const { commentsArray, email, comment } = this.state;
     return (
       <div>
         <section className="productDetail">
@@ -147,7 +180,7 @@ class ProductDetail extends React.Component {
           <button
             type="button"
             data-testid="product-detail-add-to-cart"
-            onClick={ () => this.addComment(product) }
+            onClick={ () => this.addToCart(product) }
           >
             Adicionar ao Carrinho
           </button>
@@ -170,6 +203,7 @@ class ProductDetail extends React.Component {
               name="email"
               type="email"
               id="email"
+              value={ email }
               placeholder="Email"
               data-testid="product-detail-email"
               required
@@ -245,6 +279,7 @@ class ProductDetail extends React.Component {
           </div>
           <textarea
             name="comment"
+            value={ comment }
             placeholder="Mensagem(opcional)"
             rows="7"
             cols="35"
@@ -264,11 +299,11 @@ class ProductDetail extends React.Component {
           && <p data-testid="error-msg">Campos inválidos</p>
         }
         <section className="comments">
-          { commentsArray.map((comment) => (
-            <div key={ comment.email }>
-              <p data-testid="review-card-email">{comment.email}</p>
-              <p data-testid="review-card-evaluation">{comment.text}</p>
-              <p data-testid="review-card-rating">{comment.rating}</p>
+          { commentsArray.map((coment) => (
+            <div key={ coment.email }>
+              <p data-testid="review-card-email">{coment.email}</p>
+              <p data-testid="review-card-evaluation">{coment.text}</p>
+              <p data-testid="review-card-rating">{coment.rating}</p>
             </div>
           ))}
 
