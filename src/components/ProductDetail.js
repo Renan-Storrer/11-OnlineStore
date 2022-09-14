@@ -13,18 +13,30 @@ class ProductDetail extends React.Component {
     checked4: false,
     checked5: false,
     email: '',
-    validatingEntries: false,
-
+    comment: '',
+    validatingEntries: true,
+    commentsArray: [],
   };
 
   componentDidMount() {
     const { match: { params: { id } } } = this.props;
     this.callGetProductById(id);
+    this.getFromLocalStorage();
   }
 
-  handleEmail({ target }) {
+  handleChange({ target }) {
     this.setState({
-      email: target.value,
+      [target.name]: target.value,
+    });
+  }
+
+  getFromLocalStorage() {
+    const { match: { params: { id } } } = this.props;
+    const response1 = JSON.parse(localStorage.getItem(id)) || [];
+    const response2 = JSON.parse(localStorage.getItem('product')) || [];
+    this.setState({
+      commentsArray: response1,
+      productsOnlocalStorage: response2,
     });
   }
 
@@ -33,27 +45,10 @@ class ProductDetail extends React.Component {
     this.setState({ product });
   }
 
-  addToCart(product) {
-    const { productsOnlocalStorage } = this.state;
-    const newProduct = product;
-    newProduct.qty = 1;
-    this.setState({
-      productsOnlocalStorage: [...productsOnlocalStorage, newProduct],
-    }, this.addtoLocalStorage);
-  }
-
-  addtoLocalStorage() {
-    const { productsOnlocalStorage } = this.state;
-    localStorage.setItem('product', JSON.stringify(productsOnlocalStorage));
-  }
-
-
-
-  btnEnviar(event) {
+  async btnEnviar(event) {
     event.preventDefault();
-
     const { checked1, checked2, checked3, checked4, checked5, email } = this.state;
-
+    const { match: { params: { id } } } = this.props;
     let checkEmail = false;
     let checkRate = false;
     let validatingEntries = false;
@@ -72,9 +67,12 @@ class ProductDetail extends React.Component {
 
     validatingEntries = checkEmail && checkRate;
 
-    this.setState({
-      validatingEntries,
-    });
+    if (validatingEntries) {
+      this.setState({
+        validatingEntries,
+      }, () => this.addComment(id));
+    }
+    this.setState({ validatingEntries });
   }
 
   radioChecked({ target }) {
@@ -86,7 +84,69 @@ class ProductDetail extends React.Component {
       checked5: false,
       [target.id]: true,
     });
-    // console.log(target.checked);
+  }
+
+  addComment() {
+    const { comment, email } = this.state;
+    let rate = 0;
+    const rate1 = 1;
+    const rate2 = 2;
+    const rate3 = 3;
+    const rate4 = 4;
+    const rate5 = 5;
+    const { checked1,
+      checked2, checked3, checked4, checked5, commentsArray } = this.state;
+    if (checked1) {
+      rate = rate1;
+    } else if (checked2) {
+      rate = rate2;
+    } else if (checked3) {
+      rate = rate3;
+    } else if (checked4) {
+      rate = rate4;
+    } else if (checked5) {
+      rate = rate5;
+    }
+
+    const obj = {
+      email,
+      text: comment,
+      rating: rate,
+    };
+
+    this.setState({ commentsArray: [...commentsArray, obj] }, this.addtoLocalStorage);
+  }
+
+  resetForm() {
+    this.setState({
+      checked1: false,
+      checked2: false,
+      checked3: false,
+      checked4: false,
+      checked5: false,
+      email: '',
+      comment: '',
+    });
+  }
+
+  addToCart(product) {
+    const { productsOnlocalStorage } = this.state;
+    const newProduct = product;
+    newProduct.qty = 1;
+    this.setState({
+      productsOnlocalStorage: [...productsOnlocalStorage, newProduct],
+    }, this.addtoLocalStorage);
+  }
+
+  addtoLocalStorage() {
+    const { match: { params: { id } } } = this.props;
+    const { commentsArray, productsOnlocalStorage, validatingEntries } = this.state;
+    if (validatingEntries) {
+      localStorage.setItem(id, JSON.stringify(commentsArray));
+    } else {
+      localStorage.setItem('product', JSON.stringify(productsOnlocalStorage));
+    }
+    this.resetForm();
   }
 
   render() {
@@ -99,6 +159,7 @@ class ProductDetail extends React.Component {
       checked5,
       validatingEntries,
     } = this.state;
+    const { commentsArray, email, comment } = this.state;
     return (
       <div>
         <section className="productDetail">
@@ -139,12 +200,14 @@ class ProductDetail extends React.Component {
           <p>Avaliação</p>
           <label htmlFor="email">
             <input
+              name="email"
               type="email"
               id="email"
+              value={ email }
               placeholder="Email"
               data-testid="product-detail-email"
               required
-              onChange={ (event) => this.handleEmail(event) }
+              onChange={ (event) => this.handleChange(event) }
             />
           </label>
           <div>
@@ -215,10 +278,13 @@ class ProductDetail extends React.Component {
 
           </div>
           <textarea
+            name="comment"
+            value={ comment }
             placeholder="Mensagem(opcional)"
             rows="7"
             cols="35"
             data-testid="product-detail-evaluation"
+            onChange={ (event) => this.handleChange(event) }
           />
           <button
             type="submit"
@@ -232,6 +298,16 @@ class ProductDetail extends React.Component {
           !validatingEntries
           && <p data-testid="error-msg">Campos inválidos</p>
         }
+        <section className="comments">
+          { commentsArray.map((coment) => (
+            <div key={ coment.email }>
+              <p data-testid="review-card-email">{coment.email}</p>
+              <p data-testid="review-card-evaluation">{coment.text}</p>
+              <p data-testid="review-card-rating">{coment.rating}</p>
+            </div>
+          ))}
+
+        </section>
       </div>
     );
   }
