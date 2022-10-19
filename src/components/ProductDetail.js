@@ -52,21 +52,14 @@ class ProductDetail extends React.Component {
     let checkEmail = false;
     let checkRate = false;
     let validatingEntries = false;
-
     if (email.includes('@') && email.includes('.com')) {
       checkEmail = true;
     }
-
-    if (checked1 === true
-      || checked2 === true
-      || checked3 === true
-      || checked4 === true
-      || checked5 === true) {
+    if (checked1 === true || checked2 === true || checked3 === true
+       || checked4 === true || checked5 === true) {
       checkRate = true;
     }
-
     validatingEntries = checkEmail && checkRate;
-
     if (validatingEntries) {
       this.setState({
         validatingEntries,
@@ -94,8 +87,8 @@ class ProductDetail extends React.Component {
     const rate3 = 3;
     const rate4 = 4;
     const rate5 = 5;
-    const { checked1,
-      checked2, checked3, checked4, checked5, commentsArray } = this.state;
+    const { checked1, checked2, checked3, checked4, checked5,
+      commentsArray } = this.state;
     if (checked1) {
       rate = rate1;
     } else if (checked2) {
@@ -107,13 +100,11 @@ class ProductDetail extends React.Component {
     } else if (checked5) {
       rate = rate5;
     }
-
     const obj = {
       email,
       text: comment,
       rating: rate,
     };
-
     this.setState({ commentsArray: [...commentsArray, obj] }, this.addtoLocalStorage);
   }
 
@@ -150,14 +141,7 @@ class ProductDetail extends React.Component {
   }
 
   render() {
-    const {
-      product,
-      checked1,
-      checked2,
-      checked3,
-      checked4,
-      checked5,
-      validatingEntries,
+    const { product, checked1, checked2, checked3, checked4, checked5, validatingEntries,
     } = this.state;
     const { commentsArray, email, comment } = this.state;
     return (
@@ -184,10 +168,7 @@ class ProductDetail extends React.Component {
           >
             Adicionar ao Carrinho
           </button>
-          <Link
-            to="/shoppingCart"
-          >
-
+          <Link to="/shoppingCart">
             <button
               data-testid="shopping-cart-button"
               type="button"
@@ -223,7 +204,6 @@ class ProductDetail extends React.Component {
               />
               1
             </label>
-
             <label htmlFor="rate2">
               <input
                 type="radio"
@@ -236,7 +216,6 @@ class ProductDetail extends React.Component {
               />
               2
             </label>
-
             <label htmlFor="rate3">
               <input
                 type="radio"
@@ -249,7 +228,6 @@ class ProductDetail extends React.Component {
               />
               3
             </label>
-
             <label htmlFor="rate4">
               <input
                 type="radio"
@@ -262,7 +240,6 @@ class ProductDetail extends React.Component {
               />
               4
             </label>
-
             <label htmlFor="rate5">
               <input
                 type="radio"
@@ -275,7 +252,6 @@ class ProductDetail extends React.Component {
               />
               5
             </label>
-
           </div>
           <textarea
             name="comment"
@@ -286,11 +262,9 @@ class ProductDetail extends React.Component {
             data-testid="product-detail-evaluation"
             onChange={ (event) => this.handleChange(event) }
           />
-          <button
-            type="submit"
-            onClick={ (event) => this.btnEnviar(event) }
-            data-testid="submit-review-btn"
-          >
+          <button type="submit" data-testid="submit-review-btn">
+            onClick=
+            { (event) => this.btnEnviar(event) }
             ENVIAR
           </button>
         </form>
@@ -306,7 +280,6 @@ class ProductDetail extends React.Component {
               <p data-testid="review-card-rating">{coment.rating}</p>
             </div>
           ))}
-
         </section>
       </div>
     );
